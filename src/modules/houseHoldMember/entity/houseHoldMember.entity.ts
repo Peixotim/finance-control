@@ -1,22 +1,43 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { HouseHold } from "../../houseHold/entity/houseHold.entity";
-import { Roles } from "../enum/houseHoldMember.enum";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
+import { User } from '../../users/entity/users.entity';
+import { Household } from '../../household/entity/household.entity';
+import { HouseholdMemberRole } from '../enum/householdMember.enum';
 
-@Entity({ name: "house_hold_member" })
-export class HouseHoldMember {
-  @PrimaryGeneratedColumn("uuid")
+@Entity({ name: 'household_member' })
+@Unique(['userId', 'householdId'])
+export class HouseholdMember {
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: "varchar", nullable: false })
-  name!: string;
+  @Column({ type: 'uuid', nullable: false, name: 'user_id' })
+  userId!: string;
 
-  //Verificar Relacionamento Antes de fazer a migration
-  @ManyToOne(() => HouseHold, (houseHold) => houseHold.houseHoldMembers)
-  houseHold!: HouseHold;
+  @Column({ type: 'uuid', nullable: false, name: 'household_id' })
+  householdId!: string;
 
-  @Column({ type: "enum", enum: Roles })
-  roles!: Roles;
+  @Column({
+    type: 'enum',
+    enum: HouseholdMemberRole,
+    default: HouseholdMemberRole.MEMBER,
+  })
+  role!: HouseholdMemberRole;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
+
+  @ManyToOne(() => User, (u) => u.householdMembers, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user!: User;
+
+  @ManyToOne(() => Household, (h) => h.members, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'household_id' })
+  household!: Household;
 }
