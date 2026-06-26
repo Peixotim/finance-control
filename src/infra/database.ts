@@ -14,7 +14,5 @@ export const AppDataSource = new DataSource({
   entities: isCompiled
     ? ["dist/modules/**/entity/*.entity.js"]
     : ["src/modules/**/entity/*.entity.ts"],
-  migrations: isCompiled
-    ? ["dist/infra/migrations/*.js"]
-    : ["src/infra/migrations/*.ts"],
+  migrations: isCompiled ? ["dist/infra/migrations/*.js"] : ["src/infra/migrations/*.ts"],
 });
