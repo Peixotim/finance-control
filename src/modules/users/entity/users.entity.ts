@@ -6,13 +6,10 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { HouseholdMember } from '../../householdMember/entity/householdMember.entity';
-import { Account } from '../../account/entity/account.entity';
-import { Category } from '../../category/entity/category.entity';
-import { Budget } from '../../budget/entity/budget.entity';
-import { Goal } from '../../goal/entity/goal.entity';
-import { RecurringTransaction } from '../../recurringTransaction/entity/recurringTransaction.entity';
-import { Investment } from '../../investment/entity/investment.entity';
+import { OutlayCategory } from '../../outlayCategory/entity/outlayCategory.entity';
+import { IncomeSource } from '../../incomeSource/entity/incomeSource.entity';
+import { Outlay } from '../../outlay/entity/outlay.entity';
+import { Income } from '../../income/entity/income.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -28,30 +25,25 @@ export class User {
   @Column({ type: 'varchar', nullable: false, name: 'password_hash' })
   passwordHash!: string;
 
+  // Nullable + unique — prepared for a future WhatsApp webhook integration.
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  phone!: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 
-  @OneToMany(() => HouseholdMember, (m) => m.user)
-  householdMembers!: HouseholdMember[];
+  @OneToMany(() => OutlayCategory, (c) => c.user)
+  outlayCategories!: OutlayCategory[];
 
-  @OneToMany(() => Account, (a) => a.user)
-  accounts!: Account[];
+  @OneToMany(() => IncomeSource, (s) => s.user)
+  incomeSources!: IncomeSource[];
 
-  @OneToMany(() => Category, (c) => c.user)
-  categories!: Category[];
+  @OneToMany(() => Outlay, (o) => o.user)
+  outlays!: Outlay[];
 
-  @OneToMany(() => Budget, (b) => b.user)
-  budgets!: Budget[];
-
-  @OneToMany(() => Goal, (g) => g.user)
-  goals!: Goal[];
-
-  @OneToMany(() => RecurringTransaction, (r) => r.user)
-  recurringTransactions!: RecurringTransaction[];
-
-  @OneToMany(() => Investment, (i) => i.user)
-  investments!: Investment[];
+  @OneToMany(() => Income, (i) => i.user)
+  incomes!: Income[];
 }
